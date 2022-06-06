@@ -4,7 +4,13 @@ https://openaccess.thecvf.com/content/ACCV2020/papers/Han_Self-supervised_Learni
 
 部分结果复现以及简单的形态学操作增强方法
 
-目前1shot结果39.4%
+目前结果
+
+1shot 39.4%
+
+3shot 62.1%
+
+5shot 73.5%
 
 ### Dataset
 https://github.com/wenhui-han/Oracle-50K
