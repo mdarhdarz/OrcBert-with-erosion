@@ -29,7 +29,7 @@ parser.add_argument('--device', type=int, nargs='+', default=[6])
 args = parser.parse_args()
 
 os.environ["CUDA_VISIBLE_DEVICES"] = ', '.join([str(x) for x in args.device])
-seed_value = 0
+seed_value = 42
 np.random.seed(seed_value)
 torch.manual_seed(seed_value)
 random.seed(seed_value)
@@ -44,7 +44,7 @@ dataloaders = get_loader(args)
 trainloader, testloader = dataloaders['train'], dataloaders['test']
 
 # build model
-model = torchvision.models.resnet18(num_classes=200)
+model = torchvision.models.resnet152(num_classes=200)
 model = nn.DataParallel(model)
 model.cuda()
 
@@ -66,7 +66,7 @@ for epoch in range(args.epochs):
         X, y = X.cuda(), y.cuda()
 
         # to use cuda
-        X = Erode(kernel_size=7, stride=1, padding=3, p=0.3)(X)
+        X = Erode()(X)
         X = transforms.Normalize([0.84, 0.84, 0.84], [0.32, 0.32, 0.32])(X)
 
         lr = opt.state_dict()['param_groups'][0]['lr']

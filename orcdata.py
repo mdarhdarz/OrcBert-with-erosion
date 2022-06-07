@@ -10,16 +10,38 @@ warnings.filterwarnings('ignore')
 
 
 class Erode(object):
-    def __init__(self, kernel_size=9, stride=1, padding=4, p=0.5):
-        self.p = p
-        self.max_pool = nn.MaxPool2d(kernel_size=kernel_size, stride=stride, padding=padding)
+    def __init__(self, kernel_size=7, padding=3, p=0.3, mix=False):
+        self.p = p / 4
+        self.mix = mix
+        self.max_pool = nn.MaxPool2d(kernel_size=kernel_size, stride=1, padding=padding)
+        self.max_pool1 = nn.MaxPool2d(kernel_size=3, stride=1, padding=1)
+        self.max_pool2 = nn.MaxPool2d(kernel_size=5, stride=1, padding=2)
+        self.max_pool3 = nn.MaxPool2d(kernel_size=7, stride=1, padding=3)
+        self.max_pool4 = nn.MaxPool2d(kernel_size=9, stride=1, padding=4)
 
     def __call__(self, img):
-        if np.random.rand() < self.p:
-            img_ = -self.max_pool(-img)
-            return img_
+        r = np.random.rand()
+        if self.mix:
+            if r < self.p:
+                img_ = -self.max_pool1(-img)
+                return img_
+            elif r < 2 * self.p:
+                img_ = -self.max_pool2(-img)
+                return img_
+            elif r < 3 * self.p:
+                img_ = -self.max_pool3(-img)
+                return img_
+            elif r < 4 * self.p:
+                img_ = -self.max_pool4(-img)
+                return img_
+            else:
+                return img
         else:
-            return img
+            if r < self.p:
+                img_ = -self.max_pool(-img)
+                return img_
+            else:
+                return img
 
 
 def get_loader(args, data_transforms=None):
